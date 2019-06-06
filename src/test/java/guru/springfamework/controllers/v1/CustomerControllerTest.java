@@ -47,7 +47,6 @@ public class CustomerControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
 
         customer1 = new CustomerDTO();
-        customer1.setId(1L);
         customer1.setFirstname(FIRST_NAME1);
         customer1.setLastname(LAST_NAME1);
         customer1.setCustomer_url(CUSTOMER_URL1);
@@ -56,7 +55,6 @@ public class CustomerControllerTest {
     @Test
     public void testListCustomers() throws Exception {
         CustomerDTO customer2 = new CustomerDTO();
-        customer2.setId(2L);
         customer2.setFirstname(FIRST_NAME2);
         customer2.setLastname(LAST_NAME2);
         customer2.setCustomer_url(CUSTOMER_URL2);

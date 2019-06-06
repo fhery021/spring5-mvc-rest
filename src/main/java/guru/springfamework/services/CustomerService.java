@@ -11,4 +11,6 @@ public interface CustomerService {
 
     CustomerDTO getCustomerById(Long id);
 
+    String CUSTOMER_BASE_URL = "/api/v1/customer/";
+
 }

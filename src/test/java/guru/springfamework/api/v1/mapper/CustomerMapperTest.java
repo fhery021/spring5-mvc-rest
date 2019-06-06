@@ -21,7 +21,6 @@ public class CustomerMapperTest {
         Customer customer = new Customer();
         customer.setFirstname(FIRST_NAME);
         customer.setLastname(LAST_NAME);
-        customer.setCustomer_url(CUSTOMER_URL);
 
         //when
         CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
@@ -29,6 +28,5 @@ public class CustomerMapperTest {
         //then
         assertEquals(FIRST_NAME, customerDTO.getFirstname());
         assertEquals(LAST_NAME, customerDTO.getLastname());
-        assertEquals(CUSTOMER_URL, customerDTO.getCustomer_url());
     }
 }

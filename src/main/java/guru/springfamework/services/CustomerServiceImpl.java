@@ -7,7 +7,7 @@ import guru.springfamework.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,18 +25,22 @@ public class CustomerServiceImpl implements CustomerService {
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository.findAll()
                 .stream()
-                .map(customerMapper::customerToCustomerDTO)
+                .map(customerToCustomerDTO())
                 .collect(Collectors.toList());
     }
 
     @Override
     public CustomerDTO getCustomerById(Long id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        if (!customer.isPresent()){
-            // handle not found exception?
-            return null;
-        }else{
-            return customerMapper.customerToCustomerDTO(customer.get());
-        }
+        return customerRepository.findById(id)
+                .map(customerToCustomerDTO())
+                .orElseThrow(RuntimeException::new);
+    }
+
+    public Function<Customer, CustomerDTO> customerToCustomerDTO() {
+        return customer -> {
+            CustomerDTO dto = customerMapper.customerToCustomerDTO(customer);
+            dto.setCustomer_url(CUSTOMER_BASE_URL + customer.getId());
+            return dto;
+        };
     }
 }
