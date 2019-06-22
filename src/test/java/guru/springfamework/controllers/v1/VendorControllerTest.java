@@ -19,9 +19,10 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,9 +83,57 @@ public class VendorControllerTest extends AbstractRestControllerTest{
                 .andExpect(jsonPath("$.name", equalTo(dto1.getName())))
                 .andExpect(jsonPath("$.vendor_url", equalTo(dto1.getUrl())));
     }
-    // TODO delete /vendors/{id} deleteById
 
-    // TODO get /vendors/{id} getById
-    // TODO patch /vendors/{id} patchById
-    // TODO PUT /vendors/{id} updateById
+    @Test
+    public void deleteVendorById() throws Exception {
+        mockMvc.perform(delete(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getVendorById() throws Exception {
+        when(vendorService.getVendorById(anyLong())).thenReturn(dto2);
+
+        mockMvc.perform(get(VendorController.BASE_URL + "/2")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(dto2.getName())))
+                .andExpect(jsonPath("$.vendor_url", equalTo(dto2.getUrl())));
+    }
+
+    @Test
+    public void patchVendorById() throws Exception{
+      // patching dto2 with name of dto1 => dto2 will have the same name as dto1
+        dto2.setName(dto1.getName());
+        when(vendorService.patchVendor(anyLong(), any(VendorDTO.class))).thenReturn(dto2);
+
+        mockMvc.perform(patch(VendorController.BASE_URL + "/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(dto2)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo(dto1.getName())))
+                .andExpect(jsonPath("vendor_url", equalTo(dto2.getUrl())));
+
+    }
+
+    @Test
+    public void updateVendorById() throws Exception {
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName("Asus");
+
+        VendorDTO returnDTO = new VendorDTO();
+        returnDTO.setName(vendorDTO.getName());
+        returnDTO.setUrl(VendorController.BASE_URL  + "/1");
+
+        when(vendorService.putVendor(anyLong(), any(VendorDTO.class))).thenReturn(returnDTO);
+
+        mockMvc.perform(put(VendorController.BASE_URL + "/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(vendorDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", equalTo("Asus")));
+
+
+    }
 }
