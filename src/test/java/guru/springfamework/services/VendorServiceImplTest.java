@@ -19,6 +19,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -81,7 +82,8 @@ public class VendorServiceImplTest  {
         vendor.setName(VENDOR_NAME);
 
 
-        when(repository.save(any())).thenReturn(vendor);
+//        when(repository.save(any())).thenReturn(vendor);
+        given(repository.save(any(Vendor.class))).willReturn(vendor);
 
         // when
         VendorDTO createdVendor = vendorService.createNewVendor(vendorDTO);
